@@ -145,6 +145,12 @@ export default class Video extends Component {
     }
   };
 
+  _onItemMetadata = (event) => {
+    if (this.props.onItemMetadata) {
+      this.props.onItemMetadata(event.nativeEvent);
+    }
+  };
+
   _onFullscreenPlayerWillPresent = (event) => {
     if (this.props.onFullscreenPlayerWillPresent) {
       this.props.onFullscreenPlayerWillPresent(event.nativeEvent);
@@ -313,6 +319,7 @@ export default class Video extends Component {
       onVideoBuffer: this._onBuffer,
       onVideoBandwidthUpdate: this._onBandwidthUpdate,
       onTimedMetadata: this._onTimedMetadata,
+      onItemMetadata: this._onItemMetadata,
       onVideoAudioBecomingNoisy: this._onAudioBecomingNoisy,
       onVideoExternalPlaybackChange: this._onExternalPlaybackChange,
       onVideoFullscreenPlayerWillPresent: this._onFullscreenPlayerWillPresent,
@@ -329,6 +336,7 @@ export default class Video extends Component {
       onPictureInPictureStatusChanged: this._onPictureInPictureStatusChanged,
       onRestoreUserInterfaceForPictureInPictureStop: this._onRestoreUserInterfaceForPictureInPictureStop,
     });
+
 
     const posterStyle = {
       ...StyleSheet.absoluteFillObject,

@@ -354,6 +354,32 @@ static int const RCTVideoUnset = -1;
 
 #pragma mark - Player and source
 
+
+- (void)metadataCollector:(AVPlayerItemMetadataCollector *)metadataCollector didCollectDateRangeMetadataGroups:(NSArray<AVDateRangeMetadataGroup *> *)metadataGroups indexesOfNewGroups:(NSIndexSet *)indexesOfNewGroups indexesOfModifiedGroups:(NSIndexSet *)indexesOfModifiedGroups{
+    
+    NSMutableArray *metadata = [[NSMutableArray alloc] init];
+    
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZ"];
+    
+    
+    for (AVDateRangeMetadataGroup *object in metadataGroups) {
+        NSDate *endDate = object.endDate == NULL ? object.startDate : object.endDate;
+        
+        [metadata addObject:@{
+            @"startDate": [dateFormat stringFromDate:object.startDate],
+            @"endDate": [dateFormat stringFromDate:endDate],
+        }];
+    }
+    
+    self->_onItemMetadata(@{
+        @"currentDate": [dateFormat stringFromDate:self->_playerItem.currentDate],
+        @"itemts": metadata
+    });
+    
+    NSLog(@"metadata %@", metadataGroups);
+}
+
 - (void)setSrc:(NSDictionary *)source
 {
   _source = source;
@@ -370,6 +396,14 @@ static int const RCTVideoUnset = -1;
       [self addPlayerItemObservers];
       [self setFilter:self->_filterName];
       [self setMaxBitRate:self->_maxBitRate];
+    
+        
+        
+        AVPlayerItemMetadataCollector *metadataCollector = [[AVPlayerItemMetadataCollector alloc] init];
+        [metadataCollector setDelegate:self queue:dispatch_get_main_queue()];
+        
+        [self->_playerItem addMediaDataCollector: metadataCollector];
+        
       
       [_player pause];
         

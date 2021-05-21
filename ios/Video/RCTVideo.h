@@ -14,11 +14,11 @@
 
 @class RCTEventDispatcher;
 #if __has_include(<react-native-video/RCTVideoCache.h>)
-@interface RCTVideo : UIView <RCTVideoPlayerViewControllerDelegate, DVAssetLoaderDelegatesDelegate, AVAssetResourceLoaderDelegate>
+@interface RCTVideo : UIView <RCTVideoPlayerViewControllerDelegate, DVAssetLoaderDelegatesDelegate, AVAssetResourceLoaderDelegate, AVPlayerItemMetadataCollectorPushDelegate>
 #elif TARGET_OS_TV
-@interface RCTVideo : UIView <RCTVideoPlayerViewControllerDelegate, AVAssetResourceLoaderDelegate>
+@interface RCTVideo : UIView <RCTVideoPlayerViewControllerDelegate, AVAssetResourceLoaderDelegate, AVPlayerItemMetadataCollectorPushDelegate>
 #else
-@interface RCTVideo : UIView <RCTVideoPlayerViewControllerDelegate, AVPictureInPictureControllerDelegate, AVAssetResourceLoaderDelegate>
+@interface RCTVideo : UIView <RCTVideoPlayerViewControllerDelegate, AVPictureInPictureControllerDelegate, AVAssetResourceLoaderDelegate, AVPlayerItemMetadataCollectorPushDelegate>
 #endif
 
 @property (nonatomic, copy) RCTDirectEventBlock onVideoLoadStart;
@@ -30,6 +30,7 @@
 @property (nonatomic, copy) RCTDirectEventBlock onVideoSeek;
 @property (nonatomic, copy) RCTDirectEventBlock onVideoEnd;
 @property (nonatomic, copy) RCTDirectEventBlock onTimedMetadata;
+@property (nonatomic, copy) RCTDirectEventBlock onItemMetadata;
 @property (nonatomic, copy) RCTDirectEventBlock onVideoAudioBecomingNoisy;
 @property (nonatomic, copy) RCTDirectEventBlock onVideoFullscreenPlayerWillPresent;
 @property (nonatomic, copy) RCTDirectEventBlock onVideoFullscreenPlayerDidPresent;

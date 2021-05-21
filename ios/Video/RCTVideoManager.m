@@ -59,6 +59,7 @@ RCT_EXPORT_VIEW_PROPERTY(onBandwidthUpdate, RCTDirectEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onVideoSeek, RCTDirectEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onVideoEnd, RCTDirectEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onTimedMetadata, RCTDirectEventBlock);
+RCT_EXPORT_VIEW_PROPERTY(onItemMetadata, RCTDirectEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onVideoAudioBecomingNoisy, RCTDirectEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onVideoFullscreenPlayerWillPresent, RCTDirectEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onVideoFullscreenPlayerDidPresent, RCTDirectEventBlock);
