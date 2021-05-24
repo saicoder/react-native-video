@@ -352,33 +352,39 @@ static int const RCTVideoUnset = -1;
   }
 }
 
-#pragma mark - Player and source
+#pragma mark - Metadata Collector
 
 
 - (void)metadataCollector:(AVPlayerItemMetadataCollector *)metadataCollector didCollectDateRangeMetadataGroups:(NSArray<AVDateRangeMetadataGroup *> *)metadataGroups indexesOfNewGroups:(NSIndexSet *)indexesOfNewGroups indexesOfModifiedGroups:(NSIndexSet *)indexesOfModifiedGroups{
-    
     NSMutableArray *metadata = [[NSMutableArray alloc] init];
-    
-    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-    [dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZ"];
     
     
     for (AVDateRangeMetadataGroup *object in metadataGroups) {
-        NSDate *endDate = object.endDate == NULL ? object.startDate : object.endDate;
+        NSDate *endDate = object.endDate == NULL ? [object.startDate dateByAddingTimeInterval:1.0] : object.endDate;
+        
+        NSMutableDictionary *metaProps = [[NSMutableDictionary alloc] init];
+        
+        for (AVMetadataItem *item in object.items) {
+            if (item.key == NULL) { continue; }
+            
+            [metaProps setObject:item.stringValue forKey:[item.key.description lowercaseString]];
+        }
         
         [metadata addObject:@{
-            @"startDate": [dateFormat stringFromDate:object.startDate],
-            @"endDate": [dateFormat stringFromDate:endDate],
+            @"id": object.uniqueID,
+            @"startDate": [NSNumber numberWithLongLong:[@(floor([object.startDate timeIntervalSince1970] * 1000)) longLongValue]],
+            @"endDate": [NSNumber numberWithLongLong:[@(floor([endDate timeIntervalSince1970] * 1000)) longLongValue]],
+            @"data": metaProps,
         }];
     }
     
-    self->_onItemMetadata(@{
-        @"currentDate": [dateFormat stringFromDate:self->_playerItem.currentDate],
-        @"itemts": metadata
+    self->_onMetadataCollected(@{
+        @"metadata": metadata
     });
-    
-    NSLog(@"metadata %@", metadataGroups);
 }
+
+
+#pragma mark - Player and source
 
 - (void)setSrc:(NSDictionary *)source
 {
@@ -398,11 +404,12 @@ static int const RCTVideoUnset = -1;
       [self setMaxBitRate:self->_maxBitRate];
     
         
+      if (@available(iOS 9.3, *)) {
+            AVPlayerItemMetadataCollector *metadataCollector = [[AVPlayerItemMetadataCollector alloc] init];
+            [metadataCollector setDelegate:self queue:dispatch_get_main_queue()];
         
-        AVPlayerItemMetadataCollector *metadataCollector = [[AVPlayerItemMetadataCollector alloc] init];
-        [metadataCollector setDelegate:self queue:dispatch_get_main_queue()];
-        
-        [self->_playerItem addMediaDataCollector: metadataCollector];
+            [self->_playerItem addMediaDataCollector: metadataCollector];
+      }
         
       
       [_player pause];

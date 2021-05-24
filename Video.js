@@ -145,9 +145,9 @@ export default class Video extends Component {
     }
   };
 
-  _onItemMetadata = (event) => {
-    if (this.props.onItemMetadata) {
-      this.props.onItemMetadata(event.nativeEvent);
+  _onMetadataCollected = (event) => {
+    if (this.props.onMetadataCollected) {
+      this.props.onMetadataCollected(event.nativeEvent);
     }
   };
 
@@ -319,7 +319,7 @@ export default class Video extends Component {
       onVideoBuffer: this._onBuffer,
       onVideoBandwidthUpdate: this._onBandwidthUpdate,
       onTimedMetadata: this._onTimedMetadata,
-      onItemMetadata: this._onItemMetadata,
+      onMetadataCollected: this._onMetadataCollected,
       onVideoAudioBecomingNoisy: this._onAudioBecomingNoisy,
       onVideoExternalPlaybackChange: this._onExternalPlaybackChange,
       onVideoFullscreenPlayerWillPresent: this._onFullscreenPlayerWillPresent,
