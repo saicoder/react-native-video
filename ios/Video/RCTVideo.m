@@ -367,6 +367,13 @@ static int const RCTVideoUnset = -1;
         for (AVMetadataItem *item in object.items) {
             if (item.key == NULL) { continue; }
             
+            // TEMP FIX - There is an issue with the date parsing between Java & Foundation
+            // If PLANNED DURATION is suplied endDate will be calulated as startDate + duration
+            if ([item.key.description  isEqual: @"PLANNED-DURATION"]) {
+                NSNumber *duration = item.numberValue;
+                endDate = [object.startDate dateByAddingTimeInterval:(duration.doubleValue)];
+            }
+            
             [metaProps setObject:item.stringValue forKey:[item.key.description lowercaseString]];
         }
         
@@ -376,6 +383,8 @@ static int const RCTVideoUnset = -1;
             @"endDate": [NSNumber numberWithLongLong:[@(floor([endDate timeIntervalSince1970] * 1000)) longLongValue]],
             @"data": metaProps,
         }];
+        
+        NSLog(@"-- %@", object);
     }
     
     self->_onMetadataCollected(@{
